@@ -6,8 +6,6 @@
 //Global variables declaring
 const double G=9.8;
 const double dt=0.01; //Step for th method //M_PI/300.0;
-const double eps=0.001;
-//theta''+g/l theta + q theta' = F_d sin(Omega t)
 
 class Pendulum
 {
@@ -35,33 +33,43 @@ Pendulum::~Pendulum()
 }
 
 //------------------------------Function declaring----------------------------
-void initial_conditions(Pendulum & p);
-void euler_cromer(Pendulum & p,double dt,double t);
+void initial_conditions(Pendulum & p, double F);
+void euler_cromer(Pendulum & p,double t);
 
 
 int main(int argc, char** argv)
 {
   Pendulum p;
-  double t=0.0;//Time 
+  
   int N = atoi(argv[1]);//steps of evolution
-  // intialization
-  initial_conditions(p);
-  for (int ii=1; ii<=N; ii++)
+  double Fo = 1.2;//El Fd inicial
+  double Ff= 1.35;
+ 
+  for (float jj=Fo; jj<=Ff; jj+=0.005)
     {
-      euler_cromer(p,dt,t);
-      std::cout << t << "\t" << p.Theta << "\t" << p.W  << std::endl;
-      t+=dt;
+       
+      double t=0.0;//Time 
+       // intialization
+      initial_conditions(p,jj);
+      for (int ii=1; ii<=N; ii++)
+        {
+          euler_cromer(p,t);
+          std::cout << N << "\t" << jj << "\t" << t << "\t" << p.Theta << "\t" << p.W  << std::endl;
+          t+=dt;
+        }
     }
   return 0;
 }
 
 
 // ------------------- Functions ------------------------------------
-void euler_cromer(Pendulum & p,double dt,double t)
+void euler_cromer(Pendulum & p,double t)
 {
   // Euler- Cromer
-  p.W=p.W+(-(G/p.L)*sin(p.Theta) - p.q*p.W + p.Fd*sin(p.Omega*t))*dt;
+  p.W=p.W+(-(G/p.L)*sin(p.Theta) - p.q*p.W + p.Fd*sin(p.Omega*t))*dt; // valor de w para una fase de la Fd de 0, 
   p.Theta=p.Theta + p.W*dt;
+    
+  // lo siguiente es para establecer que Theta este en el rango de PI
   if(p.Theta < - M_PI)
     {
       p.Theta += 2*M_PI;
@@ -72,12 +80,12 @@ void euler_cromer(Pendulum & p,double dt,double t)
     }
 } 
  
-void initial_conditions(Pendulum & p)
+void initial_conditions(Pendulum & p, double F)
 {
-  p.q=0.5;
-  p.Fd=1.4;
+  p.q=0;
+  p.Fd=F;
   p.Omega=0.666;
-  p.L=G;
+  p.L=G; // con este valor de L se consigue que el cuadrado de laa frecuencia angular sea 1.
   p.W=0.0;
   p.Theta=0.2;  
 }

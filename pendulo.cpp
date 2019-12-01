@@ -5,7 +5,7 @@
 
 //Global variables declaring
 const double G=9.8;
-const double dt=0.01; //Step for th method //M_PI/300.0;
+const double dt=0.1; //Step for th method //M_PI/300.0;
 
 class Pendulum
 {
@@ -41,23 +41,27 @@ int main(int argc, char** argv)
 {
   Pendulum p;
   
-  int N = atoi(argv[1]);//steps of evolution
+  
+  int MET=atoi(argv[1]);
+  int N = atoi(argv[2]);//steps of evolution
   double Fo = 0;//El Fd inicial
   double Ff= 1.35;
- 
-  for (float jj=Fo; jj<=Ff; jj+=0.005)
+  if(N==1){std::cout<<"Hello";}
+  else{
+    
+  for (float jj=Fo; jj<=Ff; jj+=0.05)
     {
-      for (double ini=-M_PI; ini<=M_PI; ini+=0.006){
+      for (double ini=-M_PI; ini<=M_PI; ini+=0.05){
       double t=0.0;//Time 
        // intialization
-      initial_conditions(p,jj);
+      initial_conditions(p,jj,ini);
       for (int ii=1; ii<=N; ii++)
         {
-          euler_cromer(p,t,ini);
-          std::cout << N << "\t" << jj << "\t"<< xi << "\t" << t << "\t" << p.Theta << "\t" << p.W  << std::endl;
+          euler_cromer(p,t);
+          std::cout << N << "\t" << jj << "\t"<< ini << "\t" << t << "\t" << p.Theta << "\t" << p.W  << std::endl;
           t+=dt;
         }
-    }}
+    }}}
   return 0;
 }
 

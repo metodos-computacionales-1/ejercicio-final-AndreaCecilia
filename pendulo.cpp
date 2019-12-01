@@ -33,7 +33,7 @@ Pendulum::~Pendulum()
 }
 
 //------------------------------Function declaring----------------------------
-void initial_conditions(Pendulum & p, double F);
+void initial_conditions(Pendulum & p, double F, double inic);
 void euler_cromer(Pendulum & p,double t);
 
 
@@ -42,22 +42,22 @@ int main(int argc, char** argv)
   Pendulum p;
   
   int N = atoi(argv[1]);//steps of evolution
-  double Fo = 1.2;//El Fd inicial
+  double Fo = 0;//El Fd inicial
   double Ff= 1.35;
  
   for (float jj=Fo; jj<=Ff; jj+=0.005)
     {
-       
+      for (double ini=-M_PI; ini<=M_PI; ini+=0.006){
       double t=0.0;//Time 
        // intialization
       initial_conditions(p,jj);
       for (int ii=1; ii<=N; ii++)
         {
-          euler_cromer(p,t);
-          std::cout << N << "\t" << jj << "\t" << t << "\t" << p.Theta << "\t" << p.W  << std::endl;
+          euler_cromer(p,t,ini);
+          std::cout << N << "\t" << jj << "\t"<< xi << "\t" << t << "\t" << p.Theta << "\t" << p.W  << std::endl;
           t+=dt;
         }
-    }
+    }}
   return 0;
 }
 
@@ -80,12 +80,12 @@ void euler_cromer(Pendulum & p,double t)
     }
 } 
  
-void initial_conditions(Pendulum & p, double F)
+void initial_conditions(Pendulum & p, double F, double I)
 {
   p.q=0;
   p.Fd=F;
   p.Omega=0.666;
   p.L=G; // con este valor de L se consigue que el cuadrado de laa frecuencia angular sea 1.
   p.W=0.0;
-  p.Theta=0.2;  
+  p.Theta=I;  
 }
